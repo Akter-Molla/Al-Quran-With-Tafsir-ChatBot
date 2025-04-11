@@ -1,4 +1,217 @@
-<link rel="stylesheet" href="https://raw.githubusercontent.com/Akter-Molla/Quran-bot-bn/blob/main/style.css" />
+<!-- ✅ Quran Chatbot with Arabic Ayats -->
+<style>
+    #chatbot-toggle {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: #4CAF50;
+        color: white;
+        padding: 15px;
+        border: none;
+        border-radius: 50%;
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    #chatbot-container {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 400px;
+        max-height: 500px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        display: none;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        overflow: hidden;
+        z-index: 1000;
+        flex-direction: column;
+        transition: all 0.3s ease;
+    }
+
+    #chatbot-container.fullscreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        z-index: 2000;
+    }
+
+    #chatbot-header {
+        background: #4CAF50;
+        color: white;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #chatbot-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        background: #f9f9f9;
+    }
+
+    #chatbot-input-container {
+        display: flex;
+        padding: 10px;
+        background: #fff;
+        border-top: 1px solid #eee;
+    }
+
+    #chatbot-input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        outline: none;
+    }
+
+    #send-button, #clear-button, #tafsir-button, #exit-fullscreen {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        margin-left: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .message {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        max-width: 90%;
+        word-wrap: break-word;
+    }
+
+    .message.user {
+        background: #e3f2fd;
+        margin-left: auto;
+    }
+
+    .message.bot {
+        background: #f1f1f1;
+        margin-right: auto;
+    }
+
+    .highlight {
+        background-color: yellow;
+        font-weight: bold;
+    }
+
+    .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(0,0,0,.3);
+        border-radius: 50%;
+        border-top-color: #4CAF50;
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    .tafsir-container {
+        background: #fffde7;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 10px;
+        border-left: 3px solid #fbc02d;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .tafsir-title {
+        font-weight: bold;
+        color: #5d4037;
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .arabic-ayat {
+        font-family: 'Traditional Arabic', 'Arial Unicode MS', 'Scheherazade', 'Lateef', sans-serif;
+        font-size: 20px;
+        text-align: right;
+        direction: rtl;
+        padding: 10px;
+        background: #f5f5f5;
+        border-radius: 5px;
+        margin: 10px 0;
+    }
+    
+    .bengali-ayat {
+        font-size: 16px;
+        padding: 10px 0;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .tab-container {
+        display: flex;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .tab {
+        padding: 10px 15px;
+        cursor: pointer;
+        background: #f1f1f1;
+        border-right: 1px solid #ddd;
+    }
+
+    .tab.active {
+        background: #4CAF50;
+        color: white;
+    }
+
+    #fullscreen-tafsir {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        z-index: 3000;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    #fullscreen-tafsir-content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        font-family: 'Segoe UI', 'Nirmala UI', 'Kalpurush', 'SolaimanLipi', Arial, sans-serif;
+    }
+
+    #fullscreen-tafsir-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    #fullscreen-tafsir-title {
+        font-size: 22px;
+        font-weight: bold;
+        color: #4CAF50;
+    }
+</style>
 
 <button id="chatbot-toggle">📖</button>
 
@@ -25,11 +238,306 @@
 <div id="fullscreen-tafsir">
     <div id="fullscreen-tafsir-content">
         <div id="fullscreen-tafsir-header">
-            <div id="fullscreen-tafsir-title">ইবনে কাসিরের তাফসীর</div>
+            <div id="fullscreen-tafsir-title">Tafsir Ibna Kasir</div>
             <button id="exit-fullscreen">✕ বন্ধ করুন</button>
         </div>
         <div id="fullscreen-tafsir-text"></div>
     </div>
 </div>
 
-<script src="https://raw.githubusercontent.com/Akter-Molla/Quran-bot-bn/blob/main/scripts.js"></script>
+<script>
+    let quranData = [];
+    let arabicData = [];
+    let tafsirData = {};
+    const QURAN_DATA_URL = "https://raw.githubusercontent.com/Akter-Molla/Quran-bot-bn/main/ayats_bn.json";
+    const ARABIC_DATA_URL = "https://raw.githubusercontent.com/alQuranBD/Database/master/json/ayats_ar.json";
+    const TAFSIR_DATA_URL = "https://raw.githubusercontent.com/Akter-Molla/Quran-bot-bn/main/Tafseer_ibn_Kathir.json";
+    let currentAya = null;
+    let isLoading = false;
+
+    // Fetch data from GitHub
+    async function fetchData() {
+        try {
+            isLoading = true;
+            showLoading();
+            
+            // Fetch Bengali Quran data
+            const quranResponse = await fetch(QURAN_DATA_URL);
+            if (!quranResponse.ok) throw new Error('Failed to fetch Bengali Quran data');
+            quranData = await quranResponse.json();
+            
+            // Fetch Arabic Quran data
+            const arabicResponse = await fetch(ARABIC_DATA_URL);
+            if (!arabicResponse.ok) throw new Error('Failed to fetch Arabic Quran data');
+            arabicData = await arabicResponse.json();
+            
+            // Fetch Tafsir data
+            const tafsirResponse = await fetch(TAFSIR_DATA_URL);
+            if (!tafsirResponse.ok) throw new Error('Failed to fetch Tafsir data');
+            tafsirData = await tafsirResponse.json();
+            
+            hideLoading();
+            isLoading = false;
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            document.getElementById('chatbot-body').innerHTML += 
+                '<div class="message bot">❌ ডেটা লোড করতে সমস্যা হয়েছে</div>';
+            isLoading = false;
+            hideLoading();
+        }
+    }
+
+    function showLoading() {
+        document.getElementById('chatbot-body').innerHTML += 
+            '<div class="message bot" id="global-loading"><span class="loading"></span> ডেটা লোড হচ্ছে...</div>';
+    }
+
+    function hideLoading() {
+        const loadingElement = document.getElementById('global-loading');
+        if (loadingElement) loadingElement.remove();
+    }
+
+    // Find Arabic ayat by sura and aya number
+    function findArabicAya(sura, aya) {
+        return arabicData.find(item => 
+            item.sura === sura.toString() && 
+            item.VerseIDAr === aya.toString()
+        );
+    }
+
+    // Initialize chatbot
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchData();
+        
+        // Toggle chatbot
+        document.getElementById("chatbot-toggle").addEventListener("click", function() {
+            const chatbot = document.getElementById("chatbot-container");
+            chatbot.style.display = chatbot.style.display === "none" ? "flex" : "none";
+        });
+
+        // Close chatbot
+        document.getElementById("close-chatbot").addEventListener("click", function() {
+            document.getElementById("chatbot-container").style.display = "none";
+        });
+
+        // Search button
+        document.getElementById("send-button").addEventListener("click", searchQuran);
+        
+        // Tafsir button
+        document.getElementById("tafsir-button").addEventListener("click", showTafsir);
+        
+        // Enter key
+        document.getElementById("chatbot-input").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") searchQuran();
+        });
+
+        // Clear button
+        document.getElementById("clear-button").addEventListener("click", function() {
+            document.getElementById("chatbot-body").innerHTML = 
+                '<div class="message bot">🤲 আসসালামু আলাইকুম<br />কোরআনের আয়াত বা তাফসীর খুঁজতে আপনার প্রশ্ন লিখুন</div>';
+            currentAya = null;
+        });
+
+        // Exit fullscreen
+        document.getElementById("exit-fullscreen").addEventListener("click", function() {
+            document.getElementById("fullscreen-tafsir").style.display = "none";
+            document.body.style.overflow = "auto";
+        });
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                if (this.dataset.tab === 'tafsir' && currentAya) {
+                    showTafsir();
+                }
+            });
+        });
+    });
+
+    // Search in Quran
+    async function searchQuran() {
+        if (isLoading) {
+            document.getElementById("chatbot-body").innerHTML += 
+                '<div class="message bot">⏳ ডেটা এখনও লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</div>';
+            return;
+        }
+
+        const input = document.getElementById("chatbot-input").value.trim();
+        const responseDiv = document.getElementById("chatbot-body");
+        
+        if (!input) {
+            responseDiv.innerHTML += '<div class="message bot">⚠️ অনুগ্রহ করে একটি শব্দ বা সূরা:আয়াত লিখুন</div>';
+            return;
+        }
+
+        // Show user message
+        responseDiv.innerHTML += `<div class="message user">${input}</div>`;
+        responseDiv.scrollTop = responseDiv.scrollHeight;
+
+        // Show loading indicator
+        const loadingId = 'loading-' + Date.now();
+        responseDiv.innerHTML += `<div class="message bot" id="${loadingId}"><span class="loading"></span> খুঁজছি...</div>`;
+        responseDiv.scrollTop = responseDiv.scrollHeight;
+
+        // Process after short delay
+        setTimeout(() => {
+            document.getElementById(loadingId).remove();
+            
+            if (quranData.length === 0 || arabicData.length === 0) {
+                responseDiv.innerHTML += '<div class="message bot">❌ কোরআন ডেটা লোড হয়নি। পরে আবার চেষ্টা করুন</div>';
+                return;
+            }
+
+            const results = searchInQuran(input);
+            
+            if (results.length > 0) {
+                displaySearchResults(results, input);
+            } else {
+                responseDiv.innerHTML += '<div class="message bot">❌ কোরআনে এই শব্দটি পাওয়া যায়নি</div>';
+            }
+
+            document.getElementById("chatbot-input").value = "";
+            responseDiv.scrollTop = responseDiv.scrollHeight;
+        }, 300);
+    }
+
+    // Search in Quran data
+    function searchInQuran(query) {
+        const results = [];
+        
+        // Check for sura:aya format (e.g. 2:255)
+        if (query.match(/^\d+:\d+$/)) {
+            const [sura, aya] = query.split(':');
+            const exactMatch = quranData.find(a => a.sura === sura && a.aya === aya);
+            if (exactMatch) {
+                return [{
+                    aya: exactMatch,
+                    count: 1
+                }];
+            }
+        }
+        
+        // Regular text search
+        const words = query.split(/\s+/);
+        
+        quranData.forEach(aya => {
+            let matchCount = 0;
+            let text = aya.text.toLowerCase();
+            
+            words.forEach(word => {
+                if (text.includes(word.toLowerCase())) {
+                    matchCount++;
+                }
+            });
+            
+            if (matchCount > 0) {
+                results.push({
+                    aya: aya,
+                    count: matchCount
+                });
+            }
+        });
+        
+        // Sort by most matches
+        return results.sort((a, b) => b.count - a.count);
+    }
+
+    // Display search results with Arabic and Bengali ayats
+    function displaySearchResults(results, input) {
+        const responseDiv = document.getElementById("chatbot-body");
+        const count = results.reduce((acc, curr) => acc + curr.count, 0);
+        responseDiv.innerHTML += `<div class="message bot">"${input}" শব্দটি ${count} বার পাওয়া গেছে:</div>`;
+        
+        results.forEach(result => {
+            const arabicAya = findArabicAya(result.aya.sura, result.aya.aya);
+            const highlighted = highlightText(result.aya.text, input);
+            currentAya = result.aya;
+            
+            let resultHTML = `
+                <div class="message bot">
+                    <strong>সূরা ${result.aya.sura}, আয়াত ${result.aya.aya}:</strong>`;
+            
+            if (arabicAya && arabicAya.ayat) {
+                resultHTML += `
+                    <div class="arabic-ayat">${arabicAya.ayat}</div>
+                    <div class="bengali-ayat">${highlighted}</div>`;
+            } else {
+                resultHTML += `<div>${highlighted}</div>`;
+            }
+            
+            resultHTML += `
+                    <button onclick="showFullscreenTafsir('${result.aya.sura}', '${result.aya.aya}')" 
+                            style="margin-top:5px; background:#8bc34a; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">
+                        সম্পূর্ণ তাফসীর দেখুন
+                    </button>
+                </div>`;
+            
+            responseDiv.innerHTML += resultHTML;
+        });
+    }
+
+    // Show Tafsir in fullscreen
+    function showFullscreenTafsir(sura, aya) {
+        const tafsirKey = `${sura}:${aya}`;
+        const tafsir = tafsirData[tafsirKey];
+        const arabicAya = findArabicAya(sura, aya);
+        const bengaliAya = quranData.find(a => a.sura === sura && a.aya === aya);
+        
+        if (!tafsir || !tafsir.text) {
+            document.getElementById("chatbot-body").innerHTML += 
+                '<div class="message bot">❌ এই আয়াতের তাফসীর পাওয়া যায়নি</div>';
+            return;
+        }
+        
+        document.getElementById("fullscreen-tafsir-title").textContent = 
+            `ইবনে কাসিরের তাফসীর - সূরা ${sura}, আয়াত ${aya}`;
+        
+        let fullscreenContent = '';
+        
+        if (arabicAya && arabicAya.ayat) {
+            fullscreenContent += `<div class="arabic-ayat">${arabicAya.ayat}</div>`;
+        }
+        
+        if (bengaliAya && bengaliAya.text) {
+            fullscreenContent += `<div class="bengali-ayat">${bengaliAya.text}</div>`;
+        }
+        
+        fullscreenContent += tafsir.text;
+        document.getElementById("fullscreen-tafsir-text").innerHTML = fullscreenContent;
+        document.getElementById("fullscreen-tafsir").style.display = "block";
+        document.body.style.overflow = "hidden";
+    }
+
+    // Show Tafsir in chat
+    function showTafsir() {
+        if (!currentAya) {
+            const input = document.getElementById("chatbot-input").value.trim();
+            if (input.match(/^\d+:\d+$/)) {
+                const [sura, aya] = input.split(':');
+                currentAya = { sura, aya };
+            } else {
+                document.getElementById("chatbot-body").innerHTML += 
+                    '<div class="message bot">⚠️ প্রথমে একটি আয়াত সিলেক্ট করুন</div>';
+                return;
+            }
+        }
+
+        showFullscreenTafsir(currentAya.sura, currentAya.aya);
+    }
+
+    // Highlight matching text
+    function highlightText(text, query) {
+        const words = query.split(/\s+/);
+        let highlighted = text;
+        
+        words.forEach(word => {
+            const regex = new RegExp(word, 'gi');
+            highlighted = highlighted.replace(regex, match => `<span class="highlight">${match}</span>`);
+        });
+        
+        return highlighted;
+    }
+</script>

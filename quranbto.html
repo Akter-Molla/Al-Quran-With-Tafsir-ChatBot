@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="https://raw.githubusercontent.com/Akter-Molla/Quran-bot-bn/blob/main/style.css" />
+
+<button id="chatbot-toggle">📖</button>
+
+<div id="chatbot-container">
+    <div id="chatbot-header">
+        <span>কোরআন বট + তাফসীর</span>
+        <button id="close-chatbot" style="background:none; border:none; color:white; cursor:pointer;">✕</button>
+    </div>
+    <div class="tab-container">
+        <div class="tab active" data-tab="quran">কোরআন</div>
+        <div class="tab" data-tab="tafsir">ইবনে কাসির</div>
+    </div>
+    <div id="chatbot-body">
+        <div class="message bot">🤲 আসসালামু আলাইকুম<br />কোরআনের আয়াত বা তাফসীর খুঁজতে আপনার প্রশ্ন লিখুন</div>
+    </div>
+    <div id="chatbot-input-container">
+        <input type="text" id="chatbot-input" placeholder="সূরা:আয়াত বা শব্দ লিখুন..." />
+        <button id="send-button">➤</button>
+        <button id="tafsir-button">তাফসীর</button>
+        <button id="clear-button">🗑️</button>
+    </div>
+</div>
+
+<div id="fullscreen-tafsir">
+    <div id="fullscreen-tafsir-content">
+        <div id="fullscreen-tafsir-header">
+            <div id="fullscreen-tafsir-title">ইবনে কাসিরের তাফসীর</div>
+            <button id="exit-fullscreen">✕ বন্ধ করুন</button>
+        </div>
+        <div id="fullscreen-tafsir-text"></div>
+    </div>
+</div>
+
+<script src="https://raw.githubusercontent.com/Akter-Molla/Quran-bot-bn/blob/main/scripts.js"></script>

@@ -19,7 +19,11 @@
         margin: 0;
         padding: 0;
     }
-
+.button-container {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0; /* বাটনগুলি সঙ্কুচিত হতে দেবেন না */
+}
     /* বাংলা ফন্ট স্ট্যাক */
     .bengali-text, #fullscreen-tafsir-title, .surah-btn, .feedback-form {
         font-family: 'SolaimanLipi', 'Bangla', 'Siyam Rupali', 'Arial Unicode MS', sans-serif;
@@ -104,11 +108,12 @@
     /* ইনপুট কন্টেইনার */
     #chatbot-input-container {
         display: flex;
-        padding: 12px;
+        padding: 4px;
         background: var(--white);
         border-top: 1px solid #eee;
         align-items: center;
-        flex-wrap: wrap;
+       flex-wrap: nowrap; /* এটি পরিবর্তন করুন */
+    gap: 6px
     }
 
     #chatbot-input {
@@ -170,7 +175,29 @@
     .btn-danger:hover {
         background: #d32f2f;
     }
+ .notification-badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #f44336;
+        color: white;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: 'SolaimanLipi', sans-serif;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        animation: pulse 2s infinite;
+    }
 
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
     /* মেসেজ স্টাইল */
     .message {
         margin-bottom: 12px;
@@ -614,7 +641,9 @@
     }
 </style>
 
-<button id="chatbot-toggle" class="tooltip" title="কোরআন বট খুলুন">📖</button>
+<button id="chatbot-toggle" class="tooltip" title="কোরআন বট খুলুন">📖
+    <div id="notification-badge" class="notification-badge">১</div>
+</button>
 
 <div id="chatbot-container">
     <div id="chatbot-header">
@@ -1321,7 +1350,35 @@
         // ডেটা লোড শুরু করুন
         fetchData();
     });
+// ডকুমেন্ট রেডি হলে নটিফিকেশন চেক করুন
+document.addEventListener('DOMContentLoaded', function() {
+    // লোকাল স্টোরেজ চেক করুন
+    const hasOpened = localStorage.getItem('chatOpened');
+    const notificationBadge = document.getElementById('notification-badge');
+    
+    if (!hasOpened) {
+        notificationBadge.style.display = 'flex';
+    }
 
+    // চ্যাট টগল ইভেন্টে নটিফিকেশন আপডেট
+    document.getElementById('chatbot-toggle').addEventListener('click', function() {
+        const chatbot = document.getElementById('chatbot-container');
+        if (chatbot.style.display === 'none') {
+            localStorage.setItem('chatOpened', 'true');
+            notificationBadge.style.display = 'none';
+        }
+    });
+
+    // নতুন ব্যবহারকারী ডিটেক্ট করুন (24 ঘন্টা পর আবার দেখাবে)
+    const firstVisit = !localStorage.getItem('lastVisit');
+    const lastVisitTime = localStorage.getItem('lastVisit');
+    const oneDay = 24 * 60 * 60 * 1000;
+
+    if (firstVisit || (Date.now() - lastVisitTime > oneDay)) {
+        notificationBadge.style.display = 'flex';
+        localStorage.setItem('lastVisit', Date.now());
+    }
+});
     // গ্লোবাল ফাংশন
     window.copyFullAya = copyFullAya;
     window.showFullTafsir = showFullTafsir;

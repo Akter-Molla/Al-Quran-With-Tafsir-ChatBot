@@ -1,0 +1,1612 @@
+<style>
+    :root {
+        --primary-color: #4CAF50;
+        --secondary-color: #2196F3;
+        --accent-color: #8bc34a;
+        --dark-color: #2E7D32;
+        --light-color: #f9f9f9;
+        --text-color: #333;
+        --white: #ffffff;
+        --shadow: 0 4px 12px rgba(0,0,0,0.15);
+        --error-color: #f44336;
+        --warning-color: #ff9800;
+        --success-color: #4caf50;
+        --bengali-font-size: 16px;
+        --arabic-font-size: 22px;
+        --arabic-font-family: 'KFGQPC Uthmanic Script HAFS', 'Traditional Arabic', 'Arial Unicode MS', sans-serif;
+    }
+
+    /* বেসিক স্টাইল */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    /* বাংলা ফন্ট স্ট্যাক */
+    .bengali-text, #fullscreen-tafsir-title, .surah-btn, .feedback-form {
+        font-family: 'SolaimanLipi', 'Bangla', 'Siyam Rupali', 'Arial Unicode MS', sans-serif;
+        font-weight: normal;
+        line-height: 1.6;
+        word-spacing: normal;
+        letter-spacing: normal;
+        font-size: var(--bengali-font-size);
+    }
+    
+    /* আরবি ফন্ট স্ট্যাক */
+    .arabic-ayat {
+        font-family: var(--arabic-font-family);
+        line-height: 2;
+        font-size: var(--arabic-font-size);
+    }
+
+    /* চ্যাটবট টগল বাটন */
+    #chatbot-toggle {
+        position: fixed;
+        bottom: 25px;
+        left: 25px;
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 18px;
+        border: none;
+        border-radius: 50%;
+        font-size: 22px;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #chatbot-toggle:hover {
+        background: var(--dark-color);
+        transform: scale(1.1);
+    }
+
+    /* চ্যাটবট কন্টেইনার */
+    #chatbot-container {
+        position: fixed;
+        bottom: 90px;
+        left: 25px;
+        width: 420px;
+        max-height: 600px;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        display: none;
+        overflow: hidden;
+        z-index: 1000;
+        flex-direction: column;
+        transition: all 0.3s ease;
+        border: 1px solid #e0e0e0;
+    }
+
+    /* হেডার স্টাইল */
+    #chatbot-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+        color: var(--white);
+        padding: 16px;
+        font-size: 18px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* বডি স্টাইল */
+    #chatbot-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        background: var(--light-color);
+        height: 400px;
+        scroll-behavior: smooth;
+    }
+
+    /* ইনপুট কন্টেইনার */
+    #chatbot-input-container {
+        display: flex;
+        padding: 4px;
+        background: var(--white);
+        border-top: 1px solid #eee;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 6px;
+    }
+
+    #chatbot-input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        outline: none;
+        font-size: 14px;
+        transition: border 0.3s;
+        min-width: 200px;
+    }
+
+    #chatbot-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    }
+
+    /* সাধারণ বাটন স্টাইল */
+    .btn {
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        padding: 12px 16px;
+        margin-left: 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn:hover {
+        background: var(--dark-color);
+    }
+
+    .btn-secondary {
+        background: var(--secondary-color);
+    }
+
+    .btn-secondary:hover {
+        background: #1565c0;
+    }
+
+    .btn-accent {
+        background: var(--accent-color);
+    }
+
+    .btn-accent:hover {
+        background: #689f38;
+    }
+
+    .btn-danger {
+        background: var(--error-color);
+    }
+
+    .btn-danger:hover {
+        background: #d32f2f;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #f44336;
+        color: white;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: 'SolaimanLipi', sans-serif;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    /* মেসেজ স্টাইল */
+    .message {
+        margin-bottom: 12px;
+        padding: 12px;
+        border-radius: 8px;
+        max-width: 90%;
+        word-wrap: break-word;
+        line-height: 1.5;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user {
+        background: #e3f2fd;
+        margin-left: auto;
+        border-bottom-right-radius: 4px;
+    }
+
+    .message.bot {
+        background: var(--white);
+        margin-right: auto;
+        border-bottom-left-radius: 4px;
+        border: 1px solid #eee;
+    }
+
+    .message.error {
+        background-color: #ffebee;
+        border-left: 4px solid var(--error-color);
+    }
+
+    .message.warning {
+        background-color: #fff8e1;
+        border-left: 4px solid var(--warning-color);
+    }
+
+    .message.success {
+        background-color: #e8f5e9;
+        border-left: 4px solid var(--success-color);
+    }
+
+    /* আরবি আয়াত স্টাইল */
+    .arabic-ayat {
+        text-align: right;
+        direction: rtl;
+        padding: 12px;
+        background: #f5f5f5;
+        border-radius: 8px;
+        margin: 12px 0;
+        line-height: 1.8;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* তাফসীর কন্টেইনার */
+    .tafsir-container {
+        background: #fffde7;
+        padding: 16px;
+        border-radius: 8px;
+        margin-top: 12px;
+        border-left: 4px solid #fbc02d;
+        line-height: 1.6;
+    }
+
+    /* ফুলস্ক্রিন তাফসীর */
+    #fullscreen-tafsir {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--white);
+        z-index: 3000;
+        padding: 30px;
+        overflow-y: auto;
+    }
+
+    #fullscreen-tafsir-content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    #fullscreen-tafsir-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    #fullscreen-tafsir-title {
+        font-size: 22px;
+        font-weight: bold;
+        color: var(--primary-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 80%;
+    }
+
+    /* কুইক অ্যাকশন বাটন */
+    .quick-actions {
+        display: flex;
+        justify-content: space-between;
+        margin: 12px 0;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .quick-action-btn {
+        background: var(--secondary-color);
+        color: var(--white);
+        border: none;
+        padding: 10px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        flex: 1;
+        transition: all 0.3s;
+        font-size: 13px;
+        text-align: center;
+        min-width: 120px;
+    }
+
+    .quick-action-btn:hover {
+        background: #1565C0;
+    }
+
+    /* লোডিং ইন্ডিকেটর */
+    .loading-spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top-color: var(--white);
+        animation: spin 1s ease-in-out infinite;
+        margin-left: 8px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* টাইপিং ইন্ডিকেটর */
+    .typing-indicator {
+        display: flex;
+        padding: 12px;
+    }
+
+    .typing-dot {
+        width: 8px;
+        height: 8px;
+        background-color: #999;
+        border-radius: 50%;
+        margin: 0 2px;
+        animation: typingAnimation 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) {
+        animation-delay: 0s;
+    }
+
+    .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes typingAnimation {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-5px); }
+    }
+
+    /* কপি বাটন */
+    .copy-btn {
+        background: #607d8b;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-left: 8px;
+        transition: all 0.3s;
+    }
+
+    .copy-btn:hover {
+        background: #455a64;
+    }
+
+    /* সূরার সিলেক্টর */
+    #surah-selector-container {
+        max-height: 250px;
+        overflow-y: auto;
+        padding: 10px;
+        background: #f5f5f5;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+
+    #surah-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+    }
+
+    .surah-btn {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+        padding: 8px 5px;
+        font-size: 12px;
+        background: #e0e0e0;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .surah-btn:hover {
+        background: #bdbdbd;
+    }
+
+    .surah-btn.active {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    #load-more-btn {
+        grid-column: 1 / -1;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 8px;
+    }
+
+    #load-more-btn:hover {
+        background: var(--dark-color);
+    }
+
+    /* ফিডব্যাক সেকশন */
+    .feedback-section {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px dashed #ddd;
+    }
+    
+    .feedback-btn {
+        background: #607d8b;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-right: 8px;
+        transition: all 0.3s;
+    }
+    
+    .feedback-btn:hover {
+        background: #455a64;
+    }
+    
+    .rating-container {
+        display: inline-block;
+        margin-left: 10px;
+    }
+    
+    .rating-star {
+        font-size: 16px;
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.2s;
+        margin-right: 2px;
+    }
+    
+    .rating-star:hover,
+    .rating-star.active {
+        color: #ffc107;
+    }
+    
+    .feedback-form {
+        background: #f5f5f5;
+        padding: 12px;
+        border-radius: 8px;
+        margin-top: 10px;
+        display: none;
+    }
+    
+    .form-group {
+        margin-bottom: 10px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 13px;
+    }
+    
+    .form-group textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        min-height: 60px;
+        resize: vertical;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+    }
+    
+    .form-actions button {
+        flex: 1;
+        padding: 8px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    /* টাইমস্ট্যাম্প */
+    .timestamp {
+        font-size: 11px;
+        color: #757575;
+        text-align: right;
+        margin-top: 4px;
+    }
+
+    /* টুলটিপ */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 12px;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /* সেটিংস মেনু */
+    .settings-menu {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background: white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    .settings-panel {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 40px;
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        width: 250px;
+        z-index: 20;
+    }
+
+    .settings-panel h4 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+    }
+
+    .settings-group {
+        margin-bottom: 15px;
+    }
+
+    .settings-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 13px;
+    }
+
+    .font-size-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .font-size-control button {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 1px solid #ddd;
+        background: white;
+        cursor: pointer;
+    }
+
+    .font-size-control button:hover {
+        background: #f5f5f5;
+    }
+
+    .font-size-value {
+        min-width: 30px;
+        text-align: center;
+    }
+
+    .font-selector {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+
+    /* স্ক্রলবার স্টাইল */
+    #surah-selector-container::-webkit-scrollbar,
+    #chatbot-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #surah-selector-container::-webkit-scrollbar-track,
+    #chatbot-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    #surah-selector-container::-webkit-scrollbar-thumb,
+    #chatbot-body::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    #surah-selector-container::-webkit-scrollbar-thumb:hover,
+    #chatbot-body::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    /* রেস্পন্সিভ ডিজাইন */
+    @media only screen and (max-width: 600px) {
+        #chatbot-container {
+            width: 90%;
+            right: 5%;
+            left: 5%;
+            bottom: 70px;
+            max-height: 70vh;
+        }
+        
+        #chatbot-body {
+            height: 50vh;
+        }
+        
+        #chatbot-input-container {
+            padding: 8px;
+        }
+        
+        #chatbot-input {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        
+        #surah-selector {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        }
+        
+        .surah-btn {
+            font-size: 11px;
+            padding: 6px 3px;
+        }
+        
+        .quick-action-btn {
+            min-width: 100px;
+            padding: 8px;
+            font-size: 12px;
+        }
+        
+        .btn {
+            padding: 10px 12px;
+            font-size: 13px;
+            margin-left: 5px;
+            margin-bottom: 5px;
+        }
+    }
+</style>
+
+<button id="chatbot-toggle" class="tooltip" title="কোরআন বট খুলুন">📖
+    <div id="notification-badge" class="notification-badge">১</div>
+</button>
+
+<div id="chatbot-container">
+    <div id="chatbot-header">
+        <span class="bengali-text"> আল কোরআন চ্যাটবট ও তাফসীর <small style="font-size:12px;">v2.2</small></span>
+        <button id="close-chatbot" style="background:none; border:none; color:white; cursor:pointer; font-size:20px;">✕</button>
+    </div>
+    <div id="chatbot-body">
+        <div class="message bot">
+            <div style="display:flex; align-items:center; margin-bottom:8px;">
+                <div style="width:36px;height:36px;background:var(--primary-color);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-right:10px;">ক</div>
+                <div>
+                    <strong>আসসালামু আলাইকুম</strong><br />
+                    কোরআনের আয়াত বা তাফসীর খুঁজতে প্রশ্ন লিখুন
+                </div>
+            </div>
+            <div class="timestamp">আজকের তারিখ: <span id="current-date"></span></div>
+        </div>
+        <div class="quick-actions">
+            <button class="quick-action-btn" id="about-bot-btn">বট সম্পর্কে</button>
+            <button class="quick-action-btn" id="usage-guide-btn">ব্যবহার নির্দেশিকা</button>
+            <button class="quick-action-btn" id="surah-list-btn">সূরার তালিকা</button>
+            <button class="quick-action-btn" id="feedback-btn">মতামত দিন</button>
+        </div>
+        <div id="surah-selector-container" style="display:none;">
+            <div style="text-align:center; margin-bottom:8px; font-weight:bold;">সূরার তালিকা</div>
+            <div class="surah-selector" id="surah-selector"></div>
+        </div>
+    </div>
+    <div id="chatbot-input-container">
+        <input type="text" id="chatbot-input" placeholder="সূরা:আয়াত বা শব্দ লিখুন..." class="bengali-text" />
+        <button id="send-button" class="btn tooltip" title="পাঠান"><span>➤</span></button>
+        <button id="tafsir-button" class="btn btn-accent tooltip" title="তাফসীর দেখুন">তাফসীর</button>
+        <button id="clear-button" class="btn btn-danger tooltip" title="পরিষ্কার করুন">🗑️</button>
+    </div>
+</div>
+
+<div id="fullscreen-tafsir">
+    <div id="fullscreen-tafsir-content">
+        <div id="fullscreen-tafsir-header">
+            <div id="fullscreen-tafsir-title" class="bengali-text">ইবনে কাসিরের তাফসীর</div>
+            <button id="exit-fullscreen" class="btn">✕ বন্ধ করুন</button>
+        </div>
+        <div id="fullscreen-tafsir-text" class="bengali-text"></div>
+    </div>
+</div>
+
+<!-- Settings Button and Panel -->
+<div class="settings-menu" id="settings-button">
+    ⚙️
+    <div class="settings-panel" id="settings-panel">
+        <h4 class="bengali-text">ফন্ট সেটিংস</h4>
+        <div class="settings-group">
+            <label class="bengali-text">বাংলা ফন্ট সাইজ</label>
+            <div class="font-size-control">
+                <button id="bengali-decrease">-</button>
+                <span id="bengali-font-size-value" class="font-size-value">16px</span>
+                <button id="bengali-increase">+</button>
+            </div>
+        </div>
+        <div class="settings-group">
+            <label class="bengali-text">আরবি ফন্ট সাইজ</label>
+            <div class="font-size-control">
+                <button id="arabic-decrease">-</button>
+                <span id="arabic-font-size-value" class="font-size-value">22px</span>
+                <button id="arabic-increase">+</button>
+            </div>
+        </div>
+        <div class="settings-group">
+            <label class="bengali-text">আরবি ফন্ট স্টাইল</label>
+            <select id="arabic-font-selector" class="font-selector bengali-text">
+                <option value="'KFGQPC Uthmanic Script HAFS', 'Traditional Arabic', 'Arial Unicode MS', sans-serif">উসমানী হাফস</option>
+                <option value="'Amiri', 'Traditional Arabic', 'Arial Unicode MS', sans-serif">আমিরি</option>
+                <option value="'Lateef', 'Traditional Arabic', 'Arial Unicode MS', sans-serif">লতিফ</option>
+                <option value="'Scheherazade', 'Traditional Arabic', 'Arial Unicode MS', sans-serif">শেহেরাযাদি</option>
+            </select>
+        </div>
+        <button id="reset-settings" class="btn btn-secondary" style="width:100%; margin-top:10px;">ডিফল্ট সেটিংস</button>
+    </div>
+</div>
+
+<script>
+    // ডেটা ভেরিয়েবল
+    let quranData = [];
+    let arabicData = [];
+    let tafsirData = {};
+    let currentAya = null;
+    let isTyping = false;
+    let currentSurahPage = 1;
+    const surahsPerPage = 10;
+    let selectedRating = 0;
+
+    // ফন্ট সেটিংস ফাংশন
+    function updateFontSettings() {
+        // বাংলা ফন্ট সাইজ
+        document.documentElement.style.setProperty('--bengali-font-size', localStorage.getItem('bengaliFontSize') || '16px');
+        document.getElementById('bengali-font-size-value').textContent = localStorage.getItem('bengaliFontSize') || '16px';
+        
+        // আরবি ফন্ট সাইজ
+        document.documentElement.style.setProperty('--arabic-font-size', localStorage.getItem('arabicFontSize') || '22px');
+        document.getElementById('arabic-font-size-value').textContent = localStorage.getItem('arabicFontSize') || '22px';
+        
+        // আরবি ফন্ট পরিবর্তন
+        document.documentElement.style.setProperty('--arabic-font-family', localStorage.getItem('arabicFontFamily') || "'KFGQPC Uthmanic Script HAFS', 'Traditional Arabic', 'Arial Unicode MS', sans-serif");
+        
+        // সিলেক্টেড ফন্ট সেট করুন
+        const arabicFontSelector = document.getElementById('arabic-font-selector');
+        if (arabicFontSelector) {
+            arabicFontSelector.value = localStorage.getItem('arabicFontFamily') || "'KFGQPC Uthmanic Script HAFS', 'Traditional Arabic', 'Arial Unicode MS', sans-serif";
+        }
+    }
+
+    // তারিখ প্রদর্শন
+    function showCurrentDate() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateStr = now.toLocaleDateString('bn-BD', options);
+        document.getElementById('current-date').textContent = dateStr;
+    }
+
+    // সংখ্যা কনভার্টার
+    function convertNumbers(input) {
+        const bnToEn = {'০':'0','১':'1','২':'2','৩':'3','৪':'4','৫':'5','৬':'6','৭':'7','৮':'8','৯':'9'};
+        const enToBn = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+        
+        let output = input;
+        // বাংলা থেকে ইংরেজি
+        for (const [bn, en] of Object.entries(bnToEn)) {
+            output = output.replace(new RegExp(bn, 'g'), en);
+        }
+        return output;
+    }
+
+    // বাংলা সংখ্যায় রূপান্তর
+    function convertToBengaliNumerals(number) {
+        const numerals = {'0':'০','1':'১','2':'২','3':'৩','4':'৪',
+                         '5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+        return number.toString().split('').map(digit => numerals[digit] || digit).join('');
+    }
+
+    // ডেটা লোড
+    async function fetchData() {
+        try {
+            showTypingIndicator();
+            
+            const [quranRes, arabicRes, tafsirRes] = await Promise.all([
+                fetch("https://raw.githubusercontent.com/Akter-Molla/Quran-bot-bn/main/ayats_bn.json"),
+                fetch("https://raw.githubusercontent.com/alQuranBD/Database/master/json/ayats_ar.json"),
+                fetch("https://raw.githubusercontent.com/Akter-Molla/Quran-bot-bn/main/Tafseer_ibn_Kathir.json")
+            ]);
+            
+            quranData = await quranRes.json();
+            arabicData = await arabicRes.json();
+            tafsirData = await tafsirRes.json();
+            
+            hideTypingIndicator();
+            initChat();
+            showCurrentDate();
+            initSurahSelector();
+            updateFontSettings();
+        } catch (error) {
+            console.error("ডেটা লোডিং ত্রুটি:", error);
+            addBotMessage('❌ ডেটা লোড করতে সমস্যা হয়েছে', 'error');
+        }
+    }
+
+    // টাইপিং ইন্ডিকেটর দেখান
+    function showTypingIndicator() {
+        isTyping = true;
+        const chatBody = document.getElementById('chatbot-body');
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'typing-indicator';
+        typingDiv.id = 'typing-indicator';
+        typingDiv.innerHTML = `
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        `;
+        chatBody.appendChild(typingDiv);
+        scrollChatToBottom();
+    }
+
+    // টাইপিং ইন্ডিকেটর লুকান
+    function hideTypingIndicator() {
+        isTyping = false;
+        const typingDiv = document.getElementById('typing-indicator');
+        if (typingDiv) {
+            typingDiv.remove();
+        }
+    }
+
+    // বট মেসেজ যোগ করুন
+    function addBotMessage(content, type = 'normal') {
+        const chatBody = document.getElementById('chatbot-body');
+        
+        if (isTyping) {
+            hideTypingIndicator();
+        }
+        
+        const messageId = Date.now();
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message bot ${type}`;
+        messageDiv.innerHTML = content + addFeedbackSection(messageId);
+        messageDiv.id = `message-${messageId}`;
+        chatBody.appendChild(messageDiv);
+        scrollChatToBottom();
+    }
+
+    // ব্যবহারকারী মেসেজ যোগ করুন
+    function addUserMessage(content) {
+        const chatBody = document.getElementById('chatbot-body');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message user';
+        messageDiv.textContent = content;
+        chatBody.appendChild(messageDiv);
+        scrollChatToBottom();
+    }
+
+    // চ্যাট স্ক্রল নিচে নিয়ে যান
+    function scrollChatToBottom() {
+        const chatBody = document.getElementById('chatbot-body');
+        setTimeout(() => {
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }, 100);
+    }
+
+    // সূরার তালিকা ইনিশিয়ালাইজ
+    function initSurahSelector() {
+        const surahNames = [
+            "আল-ফাতিহা", "আল-বাকারা", "আল-ইমরান", "আন-নিসা", "আল-মায়িদা",
+            "আল-আন'আম", "আল-আ'রাফ", "আল-আনফাল", "আত-তাওবা", "ইউনুস",
+            "হুদ", "ইউসুফ", "আর-রা'দ", "ইবরাহীম", "আল-হিজর",
+            "আন-নাহল", "আল-ইসরা", "আল-কাহফ", "মারইয়াম", "ত্ব-হা",
+            "আল-আম্বিয়া", "আল-হাজ্জ", "আল-মুমিনুন", "আন-নূর", "আল-ফুরকান",
+            "আশ-শু'আরা", "আন-নামল", "আল-কাসাস", "আল-আনকাবুত", "আর-রূম",
+            "লুকমান", "আস-সাজদা", "আল-আহযাব", "সাবা", "ফাতির",
+            "ইয়াসীন", "আস-সাফফাত", "সাদ", "আয-যুমার", "গাফির",
+            "ফুসসিলাত", "আশ-শূরা", "আয-যুখরুফ", "আদ-দুখান", "আল-জাসিয়া",
+            "আল-আহকাফ", "মুহাম্মদ", "আল-ফাতহ", "আল-হুজুরাত", "ক্বাফ",
+            "আয-যারিয়াত", "আত-তূর", "আন-নাজম", "আল-কামার", "আর-রাহমান",
+            "আল-ওয়াকি'আহ", "আল-হাদীদ", "আল-মুজাদালাহ", "আল-হাশর", "আল-মুমতাহিনা",
+            "আস-সাফ", "আল-জুমু'আহ", "আল-মুনাফিকুন", "আত-তাগাবুন", "আত-তালাক",
+            "আত-তাহরীম", "আল-মুলক", "আল-কালাম", "আল-হাক্কাহ", "আল-মা'আরিজ",
+            "নূহ", "আল-জিন", "আল-মুজাম্মিল", "আল-মুদ্দাস্সির", "আল-কিয়ামাহ",
+            "আল-ইনসান", "আল-মুরসালাত", "আন-নাবা", "আন-নাযি'আত", "আবাসা",
+            "আত-তাকভীর", "আল-ইনফিতার", "আল-মুতাফফিফীন", "আল-ইনশিকাক", "আল-বুরুজ",
+            "আত-তারিক", "আল-আ'লা", "আল-গাশিয়া", "আল-ফাজর", "আল-বালাদ",
+            "আশ-শামস", "আল-লাইল", "আদ-দুহা", "আল-ইনশিরাহ", "আত-তীন",
+            "আল-আলাক", "আল-কাদর", "আল-বাইয়্যিনাহ", "আয-যিলযাল", "আল-আদিয়াত",
+            "আল-কারি'আহ", "আত-তাকাসুর", "আল-আসর", "আল-হুমাযাহ", "আল-ফীল",
+            "কুরাইশ", "আল-মাউন", "আল-কাউসার", "আল-কাফিরুন", "আন-নাসর",
+            "আল-মাসাদ", "আল-ইখলাস", "আল-ফালাক", "আন-নাস"
+        ];
+
+        const container = document.getElementById('surah-selector');
+        container.innerHTML = '';
+        
+        // শুধুমাত্র বর্তমান পৃষ্ঠার সূরাগুলো লোড করুন
+        const startIdx = (currentSurahPage - 1) * surahsPerPage;
+        const endIdx = startIdx + surahsPerPage;
+        const surahsToShow = surahNames.slice(startIdx, endIdx);
+
+        surahsToShow.forEach((name, idx) => {
+            const suraNum = startIdx + idx + 1;
+            const btn = document.createElement('button');
+            btn.className = 'surah-btn bengali-text';
+            btn.title = name;
+            btn.innerHTML = `${convertToBengaliNumerals(suraNum)}. ${name}`;
+            
+            if (window.innerWidth < 768) {
+                btn.textContent = `${convertToBengaliNumerals(suraNum)}. ${name.split('-')[0]}`;
+            }
+            
+            btn.onclick = () => {
+                document.getElementById('chatbot-input').value = `${suraNum}:1`;
+                document.getElementById('send-button').click();
+                document.querySelectorAll('.surah-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            };
+            container.appendChild(btn);
+        });
+
+        // "আরো দেখুন" বাটন যোগ করুন (যদি আরো সূরা থাকে)
+        if (endIdx < surahNames.length) {
+            const loadMoreBtn = document.createElement('button');
+            loadMoreBtn.id = 'load-more-btn';
+            loadMoreBtn.className = 'bengali-text';
+            loadMoreBtn.innerHTML = 'আরো দেখুন <span style="font-size:12px;">▼</span>';
+            loadMoreBtn.onclick = () => {
+                currentSurahPage++;
+                initSurahSelector();
+                scrollChatToBottom();
+            };
+            container.appendChild(loadMoreBtn);
+        }
+    }
+
+    // সূরার তালিকা টগল
+    function toggleSurahList() {
+        const container = document.getElementById('surah-selector-container');
+        if (container.style.display === 'none') {
+            currentSurahPage = 1;
+            initSurahSelector();
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    // সার্চ ফাংশন
+    function searchQuran(query) {
+        const normalizedQuery = convertNumbers(query);
+        const suraAyaMatch = normalizedQuery.match(/^(\d+)[:\.\/,](\d+)$/);
+        
+        if (suraAyaMatch) {
+            const [, sura, aya] = suraAyaMatch;
+            const exactMatch = quranData.find(a => a.sura === sura && a.aya === aya);
+            return exactMatch ? [exactMatch] : [];
+        }
+        
+        const words = normalizedQuery.toLowerCase().split(/\s+/);
+        return quranData.filter(aya => {
+            const text = aya.text.toLowerCase();
+            return words.some(word => text.includes(word));
+        });
+    }
+
+    // ফলাফল প্রদর্শন
+    function displayResults(results, query) {
+        if (results.length === 0) {
+            addBotMessage('কোন ফলাফল পাওয়া যায়নি', 'error');
+            return;
+        }
+        
+        let resultHTML = `<strong>"${query}" এর জন্য ${results.length}টি ফলাফল:</strong>`;
+        addBotMessage(resultHTML);
+        
+        results.forEach(aya => {
+            const arabic = arabicData.find(a => a.sura === aya.sura && a.VerseIDAr === aya.aya);
+            
+            resultHTML = `
+                <div style="margin-bottom:8px;">
+                    <strong>সূরা ${convertToBengaliNumerals(aya.sura)}, আয়াত ${convertToBengaliNumerals(aya.aya)}:</strong>
+                    <button class="copy-btn" onclick="copyFullAya('${aya.sura}', '${aya.aya}')">সম্পূর্ণ কপি</button>
+                </div>`;
+            
+            if (arabic?.ayat) {
+                resultHTML += `<div class="arabic-ayat">${arabic.ayat}</div>`;
+            }
+            
+            resultHTML += `
+                <div style="margin-bottom:8px;" class="bengali-text">${aya.text}</div>
+                <div style="display:flex; gap:8px; flex-wrap: wrap;">
+                    <button onclick="showFullTafsir('${aya.sura}', '${aya.aya}')" 
+                            style="flex:1; min-width: 120px; background:var(--accent-color); color:white; border:none; padding:8px; border-radius:6px; cursor:pointer;">
+                        তাফসীর দেখুন
+                    </button>
+                    <button onclick="showNextAya('${aya.sura}', '${aya.aya}')" 
+                            style="flex:1; min-width: 120px; background:var(--secondary-color); color:white; border:none; padding:8px; border-radius:6px; cursor:pointer;">
+                        পরের আয়াত
+                    </button>
+                </div>
+                <div class="timestamp">সূরা ${convertToBengaliNumerals(aya.sura)}, আয়াত ${convertToBengaliNumerals(aya.aya)}</div>
+            `;
+            
+            addBotMessage(resultHTML);
+            currentAya = aya;
+        });
+    }
+
+    // পুরো আয়াত কপি করুন
+    function copyFullAya(sura, aya) {
+        const arabic = arabicData.find(a => a.sura === sura && a.VerseIDAr === aya);
+        const bengali = quranData.find(a => a.sura === sura && a.aya === aya);
+        
+        let textToCopy = `সূরা ${convertToBengaliNumerals(sura)}, আয়াত ${convertToBengaliNumerals(aya)}:\n\n`;
+        if (arabic?.ayat) {
+            textToCopy += `${arabic.ayat}\n\n`;
+        }
+        if (bengali?.text) {
+            textToCopy += `${bengali.text}\n\n`;
+        }
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const notification = document.createElement('div');
+            notification.className = 'message bot success';
+            notification.textContent = 'পুরো আয়াত কপি করা হয়েছে!';
+            notification.style.animation = 'fadeIn 0.3s ease';
+            document.getElementById('chatbot-body').appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+            scrollChatToBottom();
+        });
+    }
+
+    // পরের আয়াত দেখান
+    function showNextAya(sura, aya) {
+        const nextAyaNum = parseInt(aya) + 1;
+        const nextAya = quranData.find(a => a.sura === sura && a.aya === nextAyaNum.toString());
+        
+        if (nextAya) {
+            document.getElementById('chatbot-input').value = `${sura}:${nextAyaNum}`;
+            document.getElementById('send-button').click();
+        } else {
+            addBotMessage('এটি এই সূরার শেষ আয়াত', 'info');
+        }
+    }
+
+    // ফুলস্ক্রিন তাফসীর
+    function showFullTafsir(sura, aya) {
+        const tafsirKey = `${sura}:${aya}`;
+        const tafsir = tafsirData[tafsirKey];
+        const arabic = arabicData.find(a => a.sura === sura && a.VerseIDAr === aya);
+        const bengali = quranData.find(a => a.sura === sura && a.aya === aya);
+
+        if (!tafsir?.text) {
+            addBotMessage('❌ এই আয়াতের তাফসীর পাওয়া যায়নি', 'error');
+            return;
+        }
+
+        document.getElementById('fullscreen-tafsir-title').innerHTML = 
+            `ইবনে কাসিরের তাফসীর - সূরা ${convertToBengaliNumerals(sura)}, আয়াত ${convertToBengaliNumerals(aya)}`;
+        
+        document.getElementById('fullscreen-tafsir-text').innerHTML = `
+            ${arabic?.ayat ? `<div class="arabic-ayat">${arabic.ayat}</div>` : ''}
+            ${bengali?.text ? `<div style="padding:12px; background:#e8f5e9; border-radius:8px; margin-bottom:12px;" class="bengali-text">${bengali.text}</div>` : ''}
+            <div class="tafsir-container bengali-text">${tafsir.text}</div>
+        `;
+        
+        document.getElementById('fullscreen-tafsir').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // তাফসীর দেখান
+    function showTafsir() {
+        if (!currentAya) {
+            const query = document.getElementById('chatbot-input').value.trim();
+            const normalizedQuery = convertNumbers(query);
+            const match = normalizedQuery.match(/^(\d+)[:\.\/,](\d+)$/);
+            
+            if (match) {
+                currentAya = { sura: match[1], aya: match[2] };
+            } else {
+                addBotMessage('⚠️ প্রথমে একটি আয়াত সিলেক্ট করুন', 'warning');
+                return;
+            }
+        }
+        showFullTafsir(currentAya.sura, currentAya.aya);
+    }
+
+    // ফুলস্ক্রিন বন্ধ
+    function closeFullscreen() {
+        document.getElementById('fullscreen-tafsir').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // ফিডব্যাক সেকশন যোগ করুন
+    function addFeedbackSection(messageId) {
+        return `
+            <div class="feedback-section" id="feedback-${messageId}">
+                <button class="feedback-btn" onclick="showFeedbackForm('${messageId}')">মতামত দিন</button>
+                <div class="rating-container">
+                    <span class="rating-star" onclick="setRating('${messageId}', 1)">★</span>
+                    <span class="rating-star" onclick="setRating('${messageId}', 2)">★</span>
+                    <span class="rating-star" onclick="setRating('${messageId}', 3)">★</span>
+                    <span class="rating-star" onclick="setRating('${messageId}', 4)">★</span>
+                    <span class="rating-star" onclick="setRating('${messageId}', 5)">★</span>
+                </div>
+                <div class="feedback-form" id="feedback-form-${messageId}">
+                    <div class="form-group">
+                        <label for="feedback-message-${messageId}">আপনার মূল্যবান মতামত</label>
+                        <textarea id="feedback-message-${messageId}" placeholder="আপনার মতামত লিখুন..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button style="background: #4CAF50; color: white;" onclick="submitFeedback('${messageId}')">পাঠান</button>
+                        <button style="background: #f44336; color: white;" onclick="hideFeedbackForm('${messageId}')">বাতিল</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ফিডব্যাক ফর্ম দেখান
+    function showFeedbackForm(messageId) {
+        document.getElementById(`feedback-form-${messageId}`).style.display = 'block';
+    }
+
+    // ফিডব্যাক ফর্ম লুকান
+    function hideFeedbackForm(messageId) {
+        document.getElementById(`feedback-form-${messageId}`).style.display = 'none';
+    }
+
+    // রেটিং সেট করুন
+    function setRating(messageId, rating) {
+        const stars = document.querySelectorAll(`#feedback-${messageId} .rating-star`);
+        stars.forEach((star, index) => {
+            if (index < rating) {
+                star.classList.add('active');
+                star.style.color = '#ffc107';
+            } else {
+                star.classList.remove('active');
+                star.style.color = '#ddd';
+            }
+        });
+        
+        // রেটিং ডেটা স্টোর করুন
+        const messageDiv = document.getElementById(`message-${messageId}`);
+        messageDiv.dataset.rating = rating;
+    }
+
+    // ফিডব্যাক জমা দিন
+    function submitFeedback(messageId) {
+        const messageDiv = document.getElementById(`message-${messageId}`);
+        const feedbackText = document.getElementById(`feedback-message-${messageId}`).value.trim();
+        const rating = messageDiv.dataset.rating || 0;
+        
+        if (!feedbackText) {
+            alert('অনুগ্রহ করে মতামত লিখুন');
+            return;
+        }
+        
+        // ফিডব্যাক ডেটা প্রসেস
+        console.log('Feedback submitted:', {
+            messageId,
+            rating,
+            feedback: feedbackText,
+            timestamp: new Date().toLocaleString('bn-BD')
+        });
+        
+        // ইমেইল পাঠানোর বিকল্প পদ্ধতি
+        const subject = `কোরআন বট সম্পর্কে মতামত (রেটিং: ${rating} স্টার)`;
+        const body = `মেসেজ আইডি: ${messageId}\nরেটিং: ${rating} স্টার\n\nমতামত:\n${feedbackText}\n\nতারিখ: ${new Date().toLocaleString('bn-BD')}`;
+        
+        // mailto লিঙ্ক ব্যবহার করে ইমেইল ক্লায়েন্ট খুলুন
+        window.location.href = `mailto:aktericclgstore@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        
+        // ইউজারকে কনফার্মেশন দিন
+        addBotMessage('ধন্যবাদ! আপনার মতামত দেওয়ার জন্য। অনুগ্রহ করে ইমেইল এপে "সেন্ড" বাটন ক্লিক করুন।', 'success');
+        hideFeedbackForm(messageId);
+    }
+
+    // বট সম্পর্কে
+    function showAboutBot() {
+        const aboutContent = `
+            <div style="margin-bottom:12px;">
+                <div style="display:flex; align-items:center; margin-bottom:12px;">
+                    <div style="width:48px;height:48px;background:var(--primary-color);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-right:12px;font-size:24px;">ক</div>
+                    <div>
+                        <strong style="font-size:18px;">কোরআন বট</strong><br>
+                        <span style="font-size:14px;color:#666;">ইসলামিক রেফারেন্স টুল</span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom:12px;">
+                    <strong>সংস্করণ:</strong> 2.2<br>
+                    <strong>ডেভেলপার:</strong> আক্তারুজ্জামান মোল্লা<br>
+                    <strong>ফেসবুক:</strong> <a href="https://www.facebook.com/akter.molla/" target="_blank" style="color:var(--secondary-color);">facebook.com/akter.molla</a><br>
+                    <strong>ওয়েবসাইট:</strong> <a href="https://aktermolla.blogspot.com/" target="_blank" style="color:var(--secondary-color);">aktermolla.blogspot.com</a>
+                </div>
+                
+                <div style="background:#f5f5f5; padding:12px; border-radius:8px;">
+                    <strong style="display:block; margin-bottom:8px;">বৈশিষ্ট্য:</strong>
+                    <ul style="margin:0; padding-left:20px;">
+                        <li>কোরআনের বাংলা অনুবাদ</li>
+                        <li>আরবী আয়াত প্রদর্শন</li>
+                        <li>ইবনে কাসিরের তাফসীর</li>
+                        <li>বাংলা-ইংরেজি মিক্সড সংখ্যা সাপোর্ট</li>
+                        <li>সূরার তালিকা</li>
+                        <li>আয়াত শেয়ারিং</li>
+                        <li>মতামত ও রেটিং সিস্টেম</li>
+                    </ul>
+                <strong style="display:block; margin-bottom:8px;">ডাটাবেজ:</strong>
+                     <ul style="margin:0; padding-left:20px;">
+                        <li>আল কোরআন বিডি</li>
+                        <li>Quranic Universal Library</li>
+                        <li>তাফহীমুল কোরআন</li>
+                     </ul>
+                </div>
+            </div>
+            <div class="timestamp">আপডেট: ${new Date().toLocaleDateString('bn-BD')}</div>
+        `;
+        addBotMessage(aboutContent);
+    }
+
+    // ব্যবহার নির্দেশিকা
+    function showUsageGuide() {
+        const guideContent = `
+            <div style="margin-bottom:12px;">
+                <strong style="display:block; margin-bottom:12px; font-size:16px;">ব্যবহার নির্দেশিকা:</strong>
+                
+                <div style="background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:12px;">
+                    <strong style="display:block; margin-bottom:8px;">সার্চ অপশন:</strong>
+                    <ul style="margin:0; padding-left:20px;">
+                        <li><strong>সূরা:আয়াত</strong> লিখুন (যেমন: 2:255 বা ২.২৫৫ বা ২/২৫৫)</li>
+                        <li><strong>শব্দ</strong> দিয়ে খুঁজুন (যেমন: রহমান বা আল্লাহ)</li>
+                        <li><strong>সূরার তালিকা</strong> থেকে সূরা সিলেক্ট করুন</li>
+                    </ul>
+                </div>
+                
+                <div style="background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:12px;">
+                    <strong style="display:block; margin-bottom:8px;">অ্যাকশন বাটন:</strong>
+                    <ul style="margin:0; padding-left:20px;">
+                        <li><strong>তাফসীর:</strong> আয়াত সিলেক্ট করে তাফসীর বাটন ক্লিক করুন</li>
+                        <li><strong>পরের আয়াত:</strong> বর্তমান সূরার পরের আয়াত দেখুন</li>
+                        <li><strong>কপি:</strong> সম্পূর্ণ আয়াত (আরবি+বাংলা) কপি করুন</li>
+                        <li><strong>পরিষ্কার:</strong> চ্যাট হিস্টোরি ক্লিয়ার করুন</li>
+                        <li><strong>মতামত:</strong> বট সম্পর্কে আপনার মতামত দিন</li>
+                    </ul>
+                </div>
+                
+                <div style="background:#e3f2fd; padding:12px; border-radius:8px;">
+                    <strong>টিপ:</strong> আপনি সরাসরি সূরা:আয়াত লিখে এন্টার চাপলেও সার্চ হবে!
+                </div>
+            </div>
+            <div class="timestamp">প্রয়োজনে:aktermolla24@gmail.com</div>
+        `;
+        addBotMessage(guideContent);
+    }
+
+    // চ্যাট ইনিশিয়ালাইজেশন
+    function initChat() {
+        // ইভেন্ট লিসেনার
+        document.getElementById('chatbot-toggle').addEventListener('click', function() {
+            const chatbot = document.getElementById('chatbot-container');
+            chatbot.style.display = chatbot.style.display === 'none' ? 'flex' : 'none';
+        });
+
+        document.getElementById('close-chatbot').addEventListener('click', function() {
+            document.getElementById('chatbot-container').style.display = 'none';
+        });
+
+        document.getElementById('send-button').addEventListener('click', function() {
+            const query = document.getElementById('chatbot-input').value.trim();
+            if (!query) return;
+            
+            addUserMessage(query);
+            document.getElementById('chatbot-input').value = '';
+            
+            showTypingIndicator();
+            setTimeout(() => {
+                const results = searchQuran(query);
+                displayResults(results, query);
+            }, 500);
+        });
+
+        document.getElementById('chatbot-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('send-button').click();
+            }
+        });
+
+        document.getElementById('clear-button').addEventListener('click', function() {
+            document.getElementById('chatbot-body').innerHTML = `
+                <div class="message bot">
+                    <div style="display:flex; align-items:center; margin-bottom:8px;">
+                        <div style="width:36px;height:36px;background:var(--primary-color);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-right:10px;">ক</div>
+                        <div>
+                            <strong>আসসালামু আলাইকুম</strong><br />
+                            কোরআনের আয়াত বা তাফসীর খুঁজতে প্রশ্ন লিখুন
+                        </div>
+                    </div>
+                    <div class="timestamp">আজকের তারিখ: <span id="current-date"></span></div>
+                </div>
+                <div class="quick-actions">
+                    <button class="quick-action-btn" id="about-bot-btn">বট সম্পর্কে</button>
+                    <button class="quick-action-btn" id="usage-guide-btn">ব্যবহার নির্দেশিকা</button>
+                    <button class="quick-action-btn" id="surah-list-btn">সূরার তালিকা</button>
+                    <button class="quick-action-btn" id="feedback-btn">মতামত দিন</button>
+                </div>
+                <div id="surah-selector-container" style="display:none;">
+                    <div style="text-align:center; margin-bottom:8px; font-weight:bold;">সূরার তালিকা</div>
+                    <div class="surah-selector" id="surah-selector"></div>
+                </div>`;
+            
+            showCurrentDate();
+            currentSurahPage = 1;
+            initSurahSelector();
+            
+            // পুনরায় ইভেন্ট অ্যাটাচ
+            document.getElementById('about-bot-btn').addEventListener('click', showAboutBot);
+            document.getElementById('usage-guide-btn').addEventListener('click', showUsageGuide);
+            document.getElementById('surah-list-btn').addEventListener('click', toggleSurahList);
+            document.getElementById('feedback-btn').addEventListener('click', function() {
+                addBotMessage(`
+                    <div class="feedback-form">
+                        <h4>আপনার মতামত দিন</h4>
+                        <div class="form-group">
+                            <label for="feedback-name">আপনার নাম (ঐচ্ছিক)</label>
+                            <input type="text" id="feedback-name" placeholder="আপনার নাম">
+                        </div>
+                        <div class="form-group">
+                            <label for="feedback-email">ইমেইল (ঐচ্ছিক)</label>
+                            <input type="email" id="feedback-email" placeholder="ইমেইল ঠিকানা">
+                        </div>
+                        <div class="form-group">
+                            <label>রেটিং</label>
+                            <div class="rating-container">
+                                <span class="rating-star" onclick="setRating(0, 1)">★</span>
+                                <span class="rating-star" onclick="setRating(0, 2)">★</span>
+                                <span class="rating-star" onclick="setRating(0, 3)">★</span>
+                                <span class="rating-star" onclick="setRating(0, 4)">★</span>
+                                <span class="rating-star" onclick="setRating(0, 5)">★</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="feedback-message">মতামত</label>
+                            <textarea id="feedback-message" placeholder="আপনার মূল্যবান মতামত লিখুন..."></textarea>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button onclick="submitGeneralFeedback()" style="flex:1; background:var(--primary-color); color:white; border:none; padding:10px; border-radius:6px; cursor:pointer;">
+                                পাঠান
+                            </button>
+                            <button onclick="this.parentElement.parentElement.parentElement.remove()" style="flex:1; background:#757575; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer;">
+                                বাতিল
+                            </button>
+                        </div>
+                    </div>
+                `);
+            });
+        });
+
+        document.getElementById('tafsir-button').addEventListener('click', showTafsir);
+        document.getElementById('exit-fullscreen').addEventListener('click', closeFullscreen);
+        document.getElementById('about-bot-btn').addEventListener('click', showAboutBot);
+        document.getElementById('usage-guide-btn').addEventListener('click', showUsageGuide);
+        document.getElementById('surah-list-btn').addEventListener('click', toggleSurahList);
+
+        // সেটিংস প্যানেল কন্ট্রোল
+        document.getElementById('settings-button').addEventListener('click', function(e) {
+            e.stopPropagation();
+            const panel = document.getElementById('settings-panel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // বাংলা ফন্ট সাইজ কন্ট্রোল
+        document.getElementById('bengali-increase').addEventListener('click', function() {
+            let currentSize = parseInt(localStorage.getItem('bengaliFontSize') || 16);
+            if (currentSize < 24) {
+                currentSize += 1;
+                localStorage.setItem('bengaliFontSize', `${currentSize}px`);
+                updateFontSettings();
+            }
+        });
+
+        document.getElementById('bengali-decrease').addEventListener('click', function() {
+            let currentSize = parseInt(localStorage.getItem('bengaliFontSize') || 16);
+            if (currentSize > 12) {
+                currentSize -= 1;
+                localStorage.setItem('bengaliFontSize', `${currentSize}px`);
+                updateFontSettings();
+            }
+        });
+
+        // আরবি ফন্ট সাইজ কন্ট্রোল
+        document.getElementById('arabic-increase').addEventListener('click', function() {
+            let currentSize = parseInt(localStorage.getItem('arabicFontSize') || 22);
+            if (currentSize < 32) {
+                currentSize += 1;
+                localStorage.setItem('arabicFontSize', `${currentSize}px`);
+                updateFontSettings();
+            }
+        });
+
+        document.getElementById('arabic-decrease').addEventListener('click', function() {
+            let currentSize = parseInt(localStorage.getItem('arabicFontSize') || 22);
+            if (currentSize > 16) {
+                currentSize -= 1;
+                localStorage.setItem('arabicFontSize', `${currentSize}px`);
+                updateFontSettings();
+            }
+        });
+
+        // আরবি ফন্ট পরিবর্তন
+        document.getElementById('arabic-font-selector').addEventListener('change', function() {
+            localStorage.setItem('arabicFontFamily', this.value);
+            updateFontSettings();
+        });
+
+        // ডিফল্ট সেটিংস রিসেট
+        document.getElementById('reset-settings').addEventListener('click', function() {
+            localStorage.removeItem('bengaliFontSize');
+            localStorage.removeItem('arabicFontSize');
+            localStorage.removeItem('arabicFontFamily');
+            updateFontSettings();
+        });
+
+        // ক্লিক করে সেটিংস প্যানেল বন্ধ
+        document.addEventListener('click', function() {
+            document.getElementById('settings-panel').style.display = 'none';
+        });
+    }
+
+    // সাধারণ ফিডব্যাক জমা দিন
+    function submitGeneralFeedback() {
+        const name = document.getElementById('feedback-name')?.value.trim() || 'Anonymous';
+        const email = document.getElementById('feedback-email')?.value.trim() || 'N/A';
+        const message = document.getElementById('feedback-message')?.value.trim();
+        
+        if (!message) {
+            alert('অনুগ্রহ করে মতামত লিখুন');
+            return;
+        }
+        
+        console.log('General Feedback:', {
+            name,
+            email,
+            message,
+            timestamp: new Date().toLocaleString('bn-BD')
+        });
+        
+        addBotMessage('ধন্যবাদ! আপনার মতামত জমা দেওয়া হয়েছে।', 'success');
+    }
+
+    // ডকুমেন্ট রেডি হলে ডেটা লোড শুরু
+    document.addEventListener('DOMContentLoaded', function() {
+        // গুগল ফন্ট লোড করুন (ঐচ্ছিক)
+        const link = document.createElement('link');
+        link.href = 'https://fonts.maateen.me/solaiman-lipi/font.css';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+        
+        // আরবি ফন্ট লোড করুন (ঐচ্ছিক)
+        const arabicFont = document.createElement('link');
+        arabicFont.href = 'https://fonts.googleapis.com/earlyaccess/amiri.css';
+        arabicFont.rel = 'stylesheet';
+        document.head.appendChild(arabicFont);
+        
+        // অন্যান্য আরবি ফন্ট লোড
+        const lateefFont = document.createElement('link');
+        lateefFont.href = 'https://fonts.googleapis.com/earlyaccess/lateef.css';
+        lateefFont.rel = 'stylesheet';
+        document.head.appendChild(lateefFont);
+        
+        const scheherazadeFont = document.createElement('link');
+        scheherazadeFont.href = 'https://fonts.googleapis.com/earlyaccess/scheherazade.css';
+        scheherazadeFont.rel = 'stylesheet';
+        document.head.appendChild(scheherazadeFont);
+        
+        // ডেটা লোড শুরু করুন
+        fetchData();
+    });
+
+    // ডকুমেন্ট রেডি হলে নটিফিকেশন চেক করুন
+    document.addEventListener('DOMContentLoaded', function() {
+        // লোকাল স্টোরেজ চেক করুন
+        const hasOpened = localStorage.getItem('chatOpened');
+        const notificationBadge = document.getElementById('notification-badge');
+        
+        if (!hasOpened) {
+            notificationBadge.style.display = 'flex';
+        }
+
+        // চ্যাট টগল ইভেন্টে নটিফিকেশন আপডেট
+        document.getElementById('chatbot-toggle').addEventListener('click', function() {
+            const chatbot = document.getElementById('chatbot-container');
+            if (chatbot.style.display === 'none') {
+                localStorage.setItem('chatOpened', 'true');
+                notificationBadge.style.display = 'none';
+            }
+        });
+
+        // নতুন ব্যবহারকারী ডিটেক্ট করুন (24 ঘন্টা পর আবার দেখাবে)
+        const firstVisit = !localStorage.getItem('lastVisit');
+        const lastVisitTime = localStorage.getItem('lastVisit');
+        const oneDay = 24 * 60 * 60 * 1000;
+
+        if (firstVisit || (Date.now() - lastVisitTime > oneDay)) {
+            notificationBadge.style.display = 'flex';
+            localStorage.setItem('lastVisit', Date.now());
+        }
+    });
+
+    // গ্লোবাল ফাংশন
+    window.copyFullAya = copyFullAya;
+    window.showFullTafsir = showFullTafsir;
+    window.showNextAya = showNextAya;
+    window.setRating = setRating;
+    window.submitFeedback = submitFeedback;
+    window.hideFeedbackForm = hideFeedbackForm;
+    window.showFeedbackForm = showFeedbackForm;
+</script>

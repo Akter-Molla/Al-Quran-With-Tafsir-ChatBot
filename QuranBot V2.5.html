@@ -68,7 +68,30 @@
             gap: 4px;
             flex-shrink: 0;
         }
+            /* চ্যাটবট টগল বাটন */
+    #chatbot-toggle {
+        position: fixed;
+        bottom: 25px;
+        left: 25px;
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 18px;
+        border: none;
+        border-radius: 50%;
+        font-size: 22px;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
+    #chatbot-toggle:hover {
+        background: var(--dark-color);
+        transform: scale(1.1);
+    }
         /* ভয়েস ইনপুট স্টাইল */
         #voice-input-btn {
             background: #f44336;

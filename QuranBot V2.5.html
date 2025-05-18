@@ -10,540 +10,1128 @@
     <link href="https://fonts.googleapis.com/earlyaccess/scheherazade.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #2196F3;
-            --accent-color: #8bc34a;
-            --dark-color: #2E7D32;
-            --light-color: #f9f9f9;
-            --text-color: #333;
-            --white: #ffffff;
-            --shadow: 0 4px 12px rgba(0,0,0,0.15);
-            --error-color: #f44336;
-            --warning-color: #ff9800;
-            --success-color: #4caf50;
-            --bengali-font-size: 16px;
-            --arabic-font-size: 22px;
-            --arabic-font-family: 'KFGQPC Uthmanic Script HAFS', 'Traditional Arabic', 'Arial Unicode MS', sans-serif;
-            --dark-bg: #121212;
-            --dark-text: #f0f0f0;
-            --dark-card: #1E1E1E;
-        }
+    --primary-color: #4CAF50;
+    --secondary-color: #2196F3;
+    --accent-color: #8bc34a;
+    --dark-color: #2E7D32;
+    --light-color: #f9f9f9;
+    --text-color: #333;
+    --white: #ffffff;
+    --shadow: 0 4px 12px rgba(0,0,0,0.15);
+    --error-color: #f44336;
+    --warning-color: #ff9800;
+    --success-color: #4caf50;
+    --bengali-font-size: 16px;
+    --arabic-font-size: 22px;
+    --arabic-font-family: 'KFGQPC Uthmanic Script HAFS', 'Traditional Arabic', 'Arial Unicode MS', sans-serif;
+    --dark-bg: #121212;
+    --dark-text: #f0f0f0;
+    --dark-card: #1E1E1E;
+}
 
-        /* বেসিক স্টাইল */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
-        }
+/* Base Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
 
-        /* ডার্ক মোড স্টাইল */
-        .dark-mode {
-            --light-color: var(--dark-bg);
-            --white: var(--dark-card);
-            --text-color: var(--dark-text);
-        }
+/* Font Styles */
+.bengali-text, #fullscreen-tafsir-title, .surah-btn, .feedback-form {
+    font-family: 'SolaimanLipi', 'Bangla', 'Siyam Rupali', 'Arial Unicode MS', sans-serif;
+    font-weight: normal;
+    line-height: 1.6;
+    word-spacing: normal;
+    letter-spacing: normal;
+    font-size: var(--bengali-font-size);
+}
 
-        .dark-mode #chatbot-container {
-            background: var(--dark-card);
-            border-color: #444;
-        }
+.arabic-ayat {
+    font-family: var(--arabic-font-family);
+    text-align: right;
+    direction: rtl;
+    line-height: 2;
+    font-size: var(--arabic-font-size);
+}
 
-        .dark-mode .message.bot {
-            background: #333;
-            border-color: #444;
-        }
+/* Chatbot Container */
+#chatbot-container {
+    position: fixed;
+    bottom: 90px;
+    left: 25px;
+    width: 420px;
+    max-height: 600px;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    display: none;
+    overflow: hidden;
+    z-index: 1000;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+}
 
-        .dark-mode #settings-panel,
-        .dark-mode #bookmarks-panel {
-            background: var(--dark-card);
-            border-color: #444;
-        }
+/* Chatbot Header */
+#chatbot-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    color: var(--white);
+    padding: 16px;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: relative;
+}
 
-        /* বাটন কন্টেইনার */
-        .button-container {
-            display: flex;
-            gap: 4px;
-            flex-shrink: 0;
-        }
-            /* চ্যাটবট টগল বাটন */
-    #chatbot-toggle {
-        position: fixed;
-        bottom: 25px;
-        left: 25px;
-        background: var(--primary-color);
-        color: var(--white);
-        padding: 18px;
-        border: none;
-        border-radius: 50%;
-        font-size: 22px;
-        cursor: pointer;
-        z-index: 1000;
-        box-shadow: var(--shadow);
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+.header-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.header-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.header-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.1);
+}
+
+/* Chatbot Body */
+#chatbot-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    background: var(--light-color);
+    height: 400px;
+    scroll-behavior: smooth;
+}
+
+/* Input Container */
+#chatbot-input-container {
+    display: flex;
+    padding: 8px;
+    background: var(--white);
+    border-top: 1px solid #eee;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+#chatbot-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: border 0.3s;
+    min-width: 200px;
+}
+
+#chatbot-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* Buttons */
+.button-container {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.btn {
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn:hover {
+    background: var(--dark-color);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background: #1565c0;
+}
+
+.btn-accent {
+    background: var(--accent-color);
+}
+
+.btn-accent:hover {
+    background: #689f38;
+}
+
+.btn-danger {
+    background: var(--error-color);
+}
+
+.btn-danger:hover {
+    background: #d32f2f;
+}
+
+#voice-input-btn {
+    background: #f44336;
+    color: white;
+}
+
+#voice-input-btn:hover {
+    background: #d32f2f;
+}
+
+#voice-input-btn.recording {
+    background: #d32f2f;
+    animation: pulse 1.5s infinite;
+}
+
+/* Toggle Button */
+#chatbot-toggle {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 18px;
+    border: none;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#chatbot-toggle:hover {
+    background: var(--dark-color);
+    transform: scale(1.1);
+}
+
+/* Messages */
+.message {
+    margin-bottom: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    max-width: 90%;
+    word-wrap: break-word;
+    line-height: 1.5;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message.user {
+    background: #e3f2fd;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+.message.bot {
+    background: var(--white);
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #eee;
+}
+
+.message.error {
+    background-color: #ffebee;
+    border-left: 4px solid var(--error-color);
+}
+
+.message.warning {
+    background-color: #fff8e1;
+    border-left: 4px solid var(--warning-color);
+}
+
+.message.success {
+    background-color: #e8f5e9;
+    border-left: 4px solid var(--success-color);
+}
+
+/* Arabic Ayat */
+.arabic-ayat {
+    padding: 12px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    margin: 12px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Tafsir */
+.tafsir-container {
+    background: #fffde7;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 12px;
+    border-left: 4px solid #fbc02d;
+    line-height: 1.6;
+}
+
+#fullscreen-tafsir {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--white);
+    z-index: 3000;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+#fullscreen-tafsir-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#fullscreen-tafsir-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+#fullscreen-tafsir-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--primary-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80%;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.quick-action-btn {
+    background: var(--secondary-color);
+    color: var(--white);
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.3s;
+    font-size: 13px;
+    text-align: center;
+    min-width: 120px;
+}
+
+.quick-action-btn:hover {
+    background: #1565C0;
+}
+
+/* Surah Selector */
+#surah-selector-container {
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+#surah-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+}
+
+.surah-btn {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    padding: 8px 5px;
+    font-size: 12px;
+    background: #e0e0e0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.surah-btn:hover {
+    background: #bdbdbd;
+}
+
+.surah-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+#load-more-btn {
+    grid-column: 1 / -1;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+#load-more-btn:hover {
+    background: var(--dark-color);
+}
+
+/* Feedback Section */
+.feedback-section {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed #ddd;
+}
+
+.feedback-btn {
+    background: #607d8b;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: all 0.3s;
+}
+
+.feedback-btn:hover {
+    background: #455a64;
+}
+
+.rating-container {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.rating-star {
+    font-size: 16px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+    margin-right: 2px;
+}
+
+.rating-star:hover,
+.rating-star.active {
+    color: #ffc107;
+}
+
+.feedback-form {
+    background: #f5f5f5;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+    display: none;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    min-height: 60px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.form-actions button {
+    flex: 1;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Timestamp */
+.timestamp {
+    font-size: 11px;
+    color: #757575;
+    text-align: right;
+    margin-top: 4px;
+}
+
+/* Tooltip */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+/* Bookmark Styles */
+.bookmark-container {
+    position: relative;
+    margin: 12px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.bookmark-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    color: white;
+    cursor: pointer;
+}
+
+.bookmark-title {
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bookmark-icon {
+    transition: transform 0.2s ease;
+}
+
+.bookmark-content {
+    max-height: 0;
+    overflow: hidden;
+    background: var(--white);
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.bookmark-container.active .bookmark-content {
+    max-height: 500px;
+    padding: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+}
+
+.bookmark-container.active .bookmark-icon {
+    transform: rotate(90deg);
+}
+
+/* Copy Button Styles */
+.copy-btn {
+    position: relative;
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-color);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.copy-btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.copy-btn:active {
+    transform: translateY(0);
+}
+
+.copy-btn::after {
+    content: "Copy";
+}
+
+.copy-btn.copied::after {
+    content: "Copied!";
+}
+
+.copy-btn.copied {
+    background: var(--success-color);
+    color: white;
+}
+
+/* Settings Button */
+.settings-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.settings-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(30deg);
+}
+
+.settings-btn .gear-icon {
+    transition: transform 0.6s ease;
+}
+
+.settings-btn:hover .gear-icon {
+    transform: rotate(180deg);
+}
+
+.settings-btn.active {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.settings-btn .badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 12px;
+    height: 12px;
+    background: var(--error-color);
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    display: none;
+}
+
+.settings-btn.has-updates .badge {
+    display: block;
+}
+
+/* Settings Tabs */
+.settings-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.settings-tab {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color);
+    opacity: 0.7;
+    position: relative;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.settings-tab:hover {
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+.settings-tab.active {
+    opacity: 1;
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.settings-tab-indicator {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.settings-tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.settings-tab-content.active {
+    display: block;
+}
+
+/* Dark Mode Adjustments */
+.dark-mode .bookmark-header {
+    background: linear-gradient(135deg, #2E7D32, #1B5E20);
+}
+
+.dark-mode .bookmark-content {
+    background: var(--dark-card);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .copy-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--dark-text);
+}
+
+.dark-mode .copy-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.dark-mode .settings-tabs {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .settings-tab {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .settings-tab:hover,
+.dark-mode .settings-tab.active {
+    color: var(--accent-color);
+}
+
+/* Micro-interactions */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tooltip for Copy Button */
+.copy-btn-tooltip {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.copy-btn:hover .copy-btn-tooltip {
+    opacity: 1;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .settings-tabs {
+        overflow-x: auto;
+        padding-bottom: 4px;
     }
-
-    #chatbot-toggle:hover {
-        background: var(--dark-color);
-        transform: scale(1.1);
+    
+    .settings-tab {
+        padding: 8px 12px;
+        font-size: 13px;
+        white-space: nowrap;
     }
-        /* ভয়েস ইনপুট স্টাইল */
-        #voice-input-btn {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
+    
+    .bookmark-header {
+        padding: 10px 12px;
+    }
+    
+    .copy-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+}
+/* Settings Panel */
+#settings-panel {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 60px;
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    width: 320px;
+    z-index: 1001;
+    border: 1px solid #eee;
+}
 
-        #voice-input-btn:hover {
-            background: #d32f2f;
-        }
+.settings-tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+}
 
-        #voice-input-btn.recording {
-            background: #d32f2f;
-            animation: pulse 1.5s infinite;
-        }
+.settings-tab {
+    padding: 8px 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
+.settings-tab.active {
+    border-bottom: 2px solid var(--primary-color);
+    font-weight: bold;
+}
 
-        /* রেকর্ডিং ইন্ডিকেটর */
-        .recording-indicator {
-            display: none;
-            align-items: center;
-            gap: 5px;
-            color: #f44336;
-            font-size: 12px;
-            margin-right: 10px;
-        }
+.settings-tab-content {
+    display: none;
+}
 
-        .recording-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #f44336;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
+.settings-tab-content.active {
+    display: block;
+}
 
-        /* সেটিংস প্যানেল */
-        #settings-panel {
-            display: none;
-            position: absolute;
-            right: 10px;
-            top: 60px;
-            background: var(--white);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            width: 320px;
-            z-index: 1001;
-            border: 1px solid #eee;
-        }
+.settings-group {
+    margin-bottom: 15px;
+}
 
-        .settings-tabs {
-            display: flex;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 15px;
-        }
+.settings-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
 
-        .dark-mode .settings-tabs {
-            border-color: #444;
-        }
+/* Switch Toggle */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
 
-        .settings-tab {
-            padding: 8px 16px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
-        }
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 
-        .settings-tab.active {
-            border-bottom: 2px solid var(--primary-color);
-            font-weight: bold;
-        }
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
 
-        .settings-tab-content {
-            display: none;
-        }
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
 
-        .settings-tab-content.active {
-            display: block;
-        }
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
 
-        .settings-group {
-            margin-bottom: 15px;
-        }
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
 
-        .settings-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
+/* Font Size Control */
+.font-size-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-        /* সুইচ টগল স্টাইল */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
+.font-size-control button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
 
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+.font-size-control button:hover {
+    background: #f5f5f5;
+}
 
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
+.font-size-value {
+    min-width: 40px;
+    text-align: center;
+}
 
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
+/* Range Slider */
+input[type="range"] {
+    width: 100%;
+    margin: 8px 0;
+}
 
-        input:checked + .slider {
-            background-color: var(--primary-color);
-        }
+/* Animations */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
 
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
+.notification-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #f44336;
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-family: 'SolaimanLipi', sans-serif;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    animation: pulse 2s infinite;
+}
 
-        /* ফন্ট সাইজ কন্ট্রোল */
-        .font-size-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+.recording-indicator {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    color: #f44336;
+    font-size: 12px;
+    margin-right: 10px;
+}
 
-        .font-size-control button {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 1px solid #ddd;
-            background: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
+.recording-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #f44336;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
 
-        .font-size-control button:hover {
-            background: #f5f5f5;
-        }
+.typing-indicator {
+    display: flex;
+    padding: 12px;
+}
 
-        .font-size-value {
-            min-width: 40px;
-            text-align: center;
-        }
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #999;
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: typingAnimation 1.4s infinite ease-in-out;
+}
 
-        /* রেঞ্জ স্লাইডার */
-        input[type="range"] {
-            width: 100%;
-            margin: 8px 0;
-        }
+.typing-dot:nth-child(1) {
+    animation-delay: 0s;
+}
 
-        /* চ্যাটবট কন্টেইনার */
-        #chatbot-container {
-            position: fixed;
-            bottom: 90px;
-            left: 25px;
-            width: 420px;
-            max-height: 600px;
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            display: none;
-            overflow: hidden;
-            z-index: 1000;
-            flex-direction: column;
-            transition: all 0.3s ease;
-            border: 1px solid #e0e0e0;
-        }
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
 
-        /* চ্যাটবট হেডার */
-        #chatbot-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
-            color: var(--white);
-            padding: 16px;
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: relative;
-        }
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
 
-        /* হেডার কন্ট্রোল বাটন */
-        .header-controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
+@keyframes typingAnimation {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-5px); }
+}
 
-        .header-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+/* Scrollbar Styles */
+#surah-selector-container::-webkit-scrollbar,
+#chatbot-body::-webkit-scrollbar {
+    width: 6px;
+}
 
-        .header-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.1);
-        }
+#surah-selector-container::-webkit-scrollbar-track,
+#chatbot-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
 
-        /* চ্যাটবট বডি */
-        #chatbot-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            background: var(--light-color);
-            height: 400px;
-            scroll-behavior: smooth;
-        }
+#surah-selector-container::-webkit-scrollbar-thumb,
+#chatbot-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
 
-        /* ইনপুট কন্টেইনার */
-        #chatbot-input-container {
-            display: flex;
-            padding: 8px;
-            background: var(--white);
-            border-top: 1px solid #eee;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+#surah-selector-container::-webkit-scrollbar-thumb:hover,
+#chatbot-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 
-        #chatbot-input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-            font-size: 14px;
-            transition: border 0.3s;
-            min-width: 200px;
-        }
+/* Dark Mode */
+.dark-mode {
+    --light-color: var(--dark-bg);
+    --white: var(--dark-card);
+    --text-color: var(--dark-text);
+}
 
-        #chatbot-input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-        }
+.dark-mode #chatbot-container {
+    background: var(--dark-card);
+    border-color: #444;
+}
 
-        /* সাধারণ বাটন স্টাইল */
-        .btn {
-            background: var(--primary-color);
-            color: var(--white);
-            border: none;
-            padding: 12px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.dark-mode .message.bot {
+    background: #333;
+    border-color: #444;
+}
 
-        .btn:hover {
-            background: var(--dark-color);
-        }
+.dark-mode #settings-panel,
+.dark-mode #bookmarks-panel {
+    background: var(--dark-card);
+    border-color: #444;
+}
 
-        .btn-secondary {
-            background: var(--secondary-color);
-        }
+.dark-mode .settings-tabs {
+    border-color: #444;
+}
 
-        .btn-secondary:hover {
-            background: #1565c0;
-        }
+.dark-mode .arabic-ayat {
+    background: #333;
+}
 
-        .btn-accent {
-            background: var(--accent-color);
-        }
+.dark-mode .tafsir-container {
+    background: #5d4037;
+}
 
-        .btn-accent:hover {
-            background: #689f38;
-        }
+.dark-mode #fullscreen-tafsir {
+    background: var(--dark-bg);
+}
 
-        .btn-danger {
-            background: var(--error-color);
-        }
-
-        .btn-danger:hover {
-            background: #d32f2f;
-        }
-
-        /* মেসেজ স্টাইল */
-        .message {
-            margin-bottom: 12px;
-            padding: 12px;
-            border-radius: 8px;
-            max-width: 90%;
-            word-wrap: break-word;
-            line-height: 1.5;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .message.user {
-            background: #e3f2fd;
-            margin-left: auto;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.bot {
-            background: var(--white);
-            margin-right: auto;
-            border-bottom-left-radius: 4px;
-            border: 1px solid #eee;
-        }
-
-        .message.error {
-            background-color: #ffebee;
-            border-left: 4px solid var(--error-color);
-        }
-
-        .message.warning {
-            background-color: #fff8e1;
-            border-left: 4px solid var(--warning-color);
-        }
-
-        .message.success {
-            background-color: #e8f5e9;
-            border-left: 4px solid var(--success-color);
-        }
-
-        /* আরবি আয়াত স্টাইল */
-        .arabic-ayat {
-            font-family: var(--arabic-font-family);
-            text-align: right;
-            direction: rtl;
-            padding: 12px;
-            background: #f5f5f5;
-            border-radius: 8px;
-            margin: 12px 0;
-            line-height: 2;
-            font-size: var(--arabic-font-size);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .dark-mode .arabic-ayat {
-            background: #333;
-        }
-
-        /* তাফসীর কন্টেইনার */
-        .tafsir-container {
-            background: #fffde7;
-            padding: 16px;
-            border-radius: 8px;
-            margin-top: 12px;
-            border-left: 4px solid #fbc02d;
-            line-height: 1.6;
-        }
-
-        .dark-mode .tafsir-container {
-            background: #5d4037;
-        }
-
-        /* ফুলস্ক্রিন তাফসীর */
-        #fullscreen-tafsir {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--white);
-            z-index: 3000;
-            padding: 30px;
-            overflow-y: auto;
-        }
-
-        .dark-mode #fullscreen-tafsir {
-            background: var(--dark-bg);
-        }
-
-        #fullscreen-tafsir-content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* রেস্পন্সিভ ডিজাইন */
-        @media only screen and (max-width: 600px) {
-            #chatbot-container {
-                width: 90%;
-                right: 5%;
-                left: 5%;
-                bottom: 70px;
-                max-height: 70vh;
-            }
-            
-            #chatbot-body {
-                height: 50vh;
-            }
-            
-            #settings-panel {
-                width: 90%;
-                right: 5%;
-            }
-            
-            .settings-tabs {
-                font-size: 14px;
-            }
-            
-            .settings-tab {
-                padding: 8px 10px;
-            }
-        }
-
-        /* বাকি CSS... */
-        /* ... পূর্বের সমস্ত CSS স্টাইল এখানে যোগ করুন ... */
+/* Responsive Design */
+@media only screen and (max-width: 600px) {
+    #chatbot-container {
+        width: 90%;
+        right: 5%;
+        left: 5%;
+        bottom: 70px;
+        max-height: 70vh;
+    }
+    
+    #chatbot-body {
+        height: 50vh;
+    }
+    
+    #chatbot-input-container {
+        padding: 8px;
+    }
+    
+    #chatbot-input {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    
+    #surah-selector {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+    
+    .surah-btn {
+        font-size: 11px;
+        padding: 6px 3px;
+    }
+    
+    .quick-action-btn {
+        min-width: 100px;
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    .btn {
+        padding: 10px 12px;
+        font-size: 13px;
+        margin-left: 5px;
+        margin-bottom: 5px;
+    }
+    
+    #settings-panel {
+        width: 90%;
+        right: 5%;
+    }
+    
+    .settings-tabs {
+        font-size: 14px;
+    }
+    
+    .settings-tab {
+        padding: 8px 10px;
+    }
+}
     </style>
 </head>
 <body>
